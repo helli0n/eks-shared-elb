@@ -1,0 +1,23 @@
+replicaCount: 1
+commonLabels: {
+  env: "test",
+  application: "nginx"
+}
+service:
+  type: LoadBalancer
+  target-type: ip
+  ports:
+    http: 80
+    https: 443
+  annotations: {
+    kubernetes.io/ingress.class: alb,
+    alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:region:account-id:certificate/cert-id",
+    alb.ingress.kubernetes.io/load-balancer-attributes: idle_timeout.timeout_seconds=600,
+    alb.ingress.kubernetes.io/scheme: internet-facing,
+    alb.ingress.kubernetes.io/group.name: "shared",
+    alb.ingress.kubernetes.io/ssl-redirect: "443",
+    alb.ingress.kubernetes.io/success-codes: "200",
+    alb.ingress.kubernetes.io/tags: Environment=env_name,Application=nginx,
+    alb.ingress.kubernetes.io/target-group-attributes: stickiness.enabled=true,stickiness.lb_cookie.duration_seconds=60,
+}
+finalizers: ingress.k8s.aws/resources
